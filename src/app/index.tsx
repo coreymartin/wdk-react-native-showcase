@@ -3,7 +3,7 @@ import { useWdkApp, AppStatus } from '@tetherto/wdk-react-native-core'
 import { colors } from '@/constants/colors';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Wallet, Layers, Component, ChevronRight, CheckCircle2, XCircle, Settings } from 'lucide-react-native';
+import { Wallet, Layers, Component, ChevronRight, CheckCircle2, XCircle, Settings, Zap } from 'lucide-react-native';
 
 const FeatureGroup = ({ title, icon, children }: { title: string, icon: React.ReactNode, children: React.ReactNode }) => (
   <View style={styles.groupContainer}>
@@ -77,8 +77,15 @@ export default function App() {
         </View>
 
         <View style={styles.groupsContainer}>
-          <FeatureGroup 
-            title="Wallet Modules" 
+          <FeatureGroup
+            title="Spark Tools"
+            icon={<Zap size={20} color={colors.primary} />}
+          >
+            <FeatureItem title="Spark Wallet Operations" route="/features/wallet/spark-tools" />
+          </FeatureGroup>
+
+          <FeatureGroup
+            title="Wallet Modules"
             icon={<Wallet size={20} color={colors.primary} />}
           >
             <FeatureItem title="Manage Accounts" route="/features/wallet/manage-account" />

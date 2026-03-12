@@ -7,15 +7,16 @@ import { ConsoleOutput } from '@/components/ConsoleOutput';
 import { colors } from '@/constants/colors';
 
 export default function ManageAccountScreen() {
-  const { 
+  const {
     createWallet,
-    initializeWallet, 
-    initializeFromMnemonic,
+    unlock,
+    restoreWallet,
     createTemporaryWallet,
     deleteWallet,
     getMnemonic,
     wallets,
-    activeWalletId
+    activeWalletId,
+    status
   } = useWalletManager();
 
   return (
@@ -25,8 +26,9 @@ export default function ManageAccountScreen() {
     >
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Current Wallet Status</Text>
-        <ConsoleOutput data={{ 
+        <ConsoleOutput data={{
           activeWalletId: activeWalletId || 'None',
+          status,
           availableWallets: wallets
         }} />
       </View>
@@ -45,17 +47,16 @@ export default function ManageAccountScreen() {
       />
 
       <ActionCard
-        title="Load Existing Wallet"
-        description="Switch to an existing wallet by ID (requires biometrics)."
+        title="Unlock Wallet"
+        description="Unlock the active wallet to load network managers and enable operations."
         fields={[
-          { id: 'walletId', type: 'text', label: 'Wallet ID', placeholder: 'user@example.com' }
+          { id: 'walletId', type: 'text', label: 'Wallet ID (optional)', placeholder: 'user@example.com' }
         ]}
         action={async ({ walletId }) => {
-          // initializeWallet({ createNew: false, walletId }) loads it.
-          await initializeWallet({ createNew: false, walletId });
-          return { success: true, message: `Loaded wallet ${walletId}` };
+          await unlock(walletId || undefined);
+          return { success: true, message: `Wallet unlocked` };
         }}
-        actionLabel="Load Wallet"
+        actionLabel="Unlock"
       />
 
       <ActionCard
@@ -66,8 +67,8 @@ export default function ManageAccountScreen() {
           { id: 'mnemonic', type: 'json', label: 'Seed Phrase', placeholder: 'word1 word2 ... word12' }
         ]}
         action={async ({ walletId, mnemonic }) => {
-          await initializeFromMnemonic(mnemonic, walletId);
-          return { success: true, message: `Wallet ${walletId} imported` };
+          const id = await restoreWallet(mnemonic, walletId);
+          return { success: true, message: `Wallet ${id} imported` };
         }}
         actionLabel="Import Wallet"
       />
